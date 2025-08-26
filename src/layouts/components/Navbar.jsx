@@ -3,10 +3,15 @@ import { Menubar } from "primereact/menubar";
 import { InputText } from "primereact/inputtext";
 import { Badge } from "primereact/badge";
 import { Avatar } from "primereact/avatar";
+import { redirect, useNavigate } from "react-router-dom";
 
 export default function TemplateDemo() {
+  const navigate = useNavigate();
   const itemRenderer = (item) => (
-    <a className="flex align-items-center p-menuitem-link">
+    <a
+      onClick={() => item.command?.()} // importante para disparar a navegação
+      className="flex align-items-center p-menuitem-link cursor-pointer"
+    >
       <span className={item.icon} />
       <span className="mx-2">{item.label}</span>
       {item.badge && <Badge className="ml-auto" value={item.badge} />}
@@ -21,6 +26,7 @@ export default function TemplateDemo() {
     {
       label: "Home",
       icon: "pi pi-home",
+      command: () => navigate("/"),
     },
     {
       label: "Team",
@@ -29,6 +35,7 @@ export default function TemplateDemo() {
         {
           label: "New",
           icon: "pi pi-sparkles",
+          command: () => navigate("/team-register"),
         },
         {
           label: "Search",
@@ -51,6 +58,10 @@ export default function TemplateDemo() {
           template: itemRenderer,
         },
       ],
+    },
+    {
+      label: "About",
+      icon: "pi pi-info-circle",
     },
   ];
 
