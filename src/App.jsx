@@ -3,8 +3,10 @@ import AppRoutes from "./routes/AppRoutes";
 function App() {
   return (
     <>
-      <Navbar />
-      <AppRoutes />
+      <div className="bg-slate-100 min-h-screen">
+        <Navbar />
+        <AppRoutes />
+      </div>
     </>
   );
 }
