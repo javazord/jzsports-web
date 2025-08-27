@@ -15,7 +15,7 @@ export default function TemplateDemo() {
     <div className="p-menuitem-content">
       <a className="flex align-items-center p-menuitem-link">
         <span className={item.icon} />
-        <span className="mx-2">{item.label}</span>
+        <span className="mx-3">{item.label}</span>
         {item.badge && <Badge className="ml-auto" value={item.badge} />}
         {item.shortcut && (
           <span className="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">
@@ -65,6 +65,7 @@ export default function TemplateDemo() {
     {
       label: "About",
       icon: "pi pi-info-circle",
+      command: () => navigate("/about"),
     },
   ];
 
@@ -112,7 +113,7 @@ export default function TemplateDemo() {
     },
   ];
 
-  const start = <img alt="logo" src="./navbar.png" className="mr-2 h-12" />;
+  const start = <img alt="logo" src="./navbar.png" height="40" />;
 
   const end = (
     <div className="flex align-items-center gap-2">
@@ -120,7 +121,7 @@ export default function TemplateDemo() {
       <Avatar
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2YyjdoI1aXnQiCggqLHXNNC3oQSXxw__Hag&s"
         shape="circle"
-        size="large"
+        size="normal"
         onClick={(e) => menu.current.toggle(e)} // abre/fecha o menu
         className="cursor-pointer"
       />
