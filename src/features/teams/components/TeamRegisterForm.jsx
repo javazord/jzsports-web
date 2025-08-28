@@ -1,5 +1,5 @@
-import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
+import { InputText } from "primereact/inputtext";
 
 export default function TeamRegisterForm() {
   return (
@@ -9,8 +9,8 @@ export default function TeamRegisterForm() {
         <Divider />
       </div>
       <div className="flex justify-content-center align-items-center">
-        <div className="grid w-full md:w-8 lg:w-6">
-          <div className="field col-12 md:col-6">
+        <div className="grid">
+          <div className="field col-12 md:col-6 mb-0">
             <label>Team Name</label>
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">
@@ -19,9 +19,8 @@ export default function TeamRegisterForm() {
               <InputText name="teamName" />
             </div>
           </div>
-
-          <div className="field col-12 md:col-6">
-            <label>Photo URL</label>
+          <div className="field col-12 md:col-6 mb-0">
+            <label>Photo</label>
             <div className="p-inputgroup flex-1">
               <span className="p-inputgroup-addon">URL</span>
               <InputText name="photoURL" />
