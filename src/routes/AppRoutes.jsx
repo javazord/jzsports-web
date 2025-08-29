@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import ChampionshipRegisterForm from "../features/championships/pages/ChampionshipRegisterForm";
+import ChampionshipRegister from "../features/championships/pages/ChampionshipRegister";
 import TeamRegister from "../features/teams/pages/TeamRegister";
+import TeamList from "../features/teams/pages/TeamList";
 import Home from "../features/home/Home";
 import About from "../features/about/About";
 export default function AppRoutes() {
@@ -10,8 +11,9 @@ export default function AppRoutes() {
       <Route path="/team-register" element={<TeamRegister />}></Route>
       <Route
         path="/championship-register"
-        element={<ChampionshipRegisterForm />}
+        element={<ChampionshipRegister />}
       ></Route>
+      <Route path="/team-list" element={<TeamList />}></Route>
       <Route path="/about" element={<About />}></Route>
     </Routes>
   );

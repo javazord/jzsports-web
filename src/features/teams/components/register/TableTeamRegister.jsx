@@ -55,7 +55,12 @@ export default function TableTeamRegister() {
   const addActionTemplate = (rowData) => (
     <Button
       icon="pi pi-plus"
-      className="p-button-sm p-button-success"
+      rounded
+      text
+      raised
+      size="small"
+      severity="success"
+      aria-label="Bookmark"
       onClick={() => addPlayer(rowData)}
     />
   );
@@ -63,6 +68,9 @@ export default function TableTeamRegister() {
   const removeActionTemplate = (rowData) => (
     <Button
       icon="pi pi-minus"
+      rounded
+      text
+      raised
       className="p-button-sm p-button-danger"
       onClick={() => removePlayer(rowData)}
     />
@@ -88,43 +96,32 @@ export default function TableTeamRegister() {
             removableSort
             stripedRows
             header={
-              <div className="flex gap-2">
-                <InputText
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search player"
-                />
-                <Button
-                  icon="pi pi-search"
-                  label="Search"
-                  onClick={() => setGlobalFilter(searchTerm)}
-                />
-              </div>
+              <>
+                <label>Nickname</label>
+                <div className="flex gap-2">
+                  <InputText
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search player"
+                  />
+                  <Button
+                    icon="pi pi-search"
+                    label="Search"
+                    onClick={() => setGlobalFilter(searchTerm)}
+                  />
+                </div>
+              </>
             }
           >
             <Column header="Photo" body={imagePlayers} />
-            <Column
-              field="data.name"
-              header="Name"
-              sortable
-              className="text-center"
-            />
-            <Column
-              field="data.nickname"
-              header="Nickname"
-              sortable
-              className="text-center"
-            />
-            <Column
-              header="Action"
-              body={addActionTemplate}
-              className="text-center"
-            />
+            <Column field="data.name" header="Name" sortable />
+            <Column field="data.nickname" header="Nickname" sortable />
+            <Column header="Action" body={addActionTemplate} />
           </DataTable>
         </div>
 
         {/* Tabela de jogadores selecionados */}
-        <div className="col-12 md:col-6 flex flex-column md:mt-6 pt-3 h-full">
+        <div className="col-12 md:col-6 flex flex-column md:mt-7 pt-4 h-full">
           <DataTable
             value={selectedPlayers}
             paginator
@@ -139,23 +136,9 @@ export default function TableTeamRegister() {
             stripedRows
           >
             <Column header="Photo" body={imagePlayers} />
-            <Column
-              field="data.name"
-              header="Name"
-              sortable
-              className="text-center"
-            />
-            <Column
-              field="data.nickname"
-              header="Nickname"
-              sortable
-              className="text-center"
-            />
-            <Column
-              header="Action"
-              body={removeActionTemplate}
-              className="text-center"
-            />
+            <Column field="data.name" header="Name" sortable />
+            <Column field="data.nickname" header="Nickname" sortable />
+            <Column header="Action" body={removeActionTemplate} />
           </DataTable>
         </div>
       </div>

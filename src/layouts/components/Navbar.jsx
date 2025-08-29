@@ -44,6 +44,7 @@ export default function TemplateDemo() {
         {
           label: "Search",
           icon: "pi pi-search",
+          command: () => navigate("/team-list"),
         },
       ],
     },
