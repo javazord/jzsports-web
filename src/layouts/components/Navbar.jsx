@@ -78,6 +78,7 @@ export default function TemplateDemo() {
           label: "Settings",
           icon: "pi pi-cog",
           template: itemRenderer,
+          command: () => navigate("/settings"),
         },
         {
           label: "Logout",
@@ -105,7 +106,7 @@ export default function TemplateDemo() {
               shape="circle"
             />
             <div className="flex flex-column align">
-              <span className="font-bold">Amy Elsner</span>
+              <span className="font-bold">Profile Name</span>
               <span className="text-sm">User</span>
             </div>
           </button>

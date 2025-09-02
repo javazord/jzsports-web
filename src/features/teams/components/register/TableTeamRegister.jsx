@@ -103,7 +103,6 @@ export default function TableTeamRegister() {
           </DataTable>
         </div>
       </div>
-
       <Divider />
       <div className="flex justify-content-end flex-wrap m-4">
         <Button

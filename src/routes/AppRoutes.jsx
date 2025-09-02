@@ -4,6 +4,7 @@ import TeamRegister from "../features/teams/pages/TeamRegister";
 import TeamList from "../features/teams/pages/TeamList";
 import Home from "../features/home/Home";
 import About from "../features/about/About";
+import Settings from "../features/settings/pages/Settings";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -15,6 +16,7 @@ export default function AppRoutes() {
       ></Route>
       <Route path="/team-list" element={<TeamList />}></Route>
       <Route path="/about" element={<About />}></Route>
+      <Route path="/settings" element={<Settings />}></Route>
     </Routes>
   );
 }
