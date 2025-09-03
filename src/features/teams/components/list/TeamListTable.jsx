@@ -81,8 +81,7 @@ export default function TeamListTable() {
             rows={5}
             rowsPerPageOptions={[5, 10, 25]}
             tableStyle={{ minWidth: "20rem" }}
-            size="small"
-            className="h-full"
+            size="normal"
             removableSort
             stripedRows
           >

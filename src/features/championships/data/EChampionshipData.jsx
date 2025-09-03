@@ -1,15 +1,8 @@
 import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
+import { useChampionshipData } from "./useChampionshipData";
 
 export default function EChampionshipData() {
-  const [type, setType] = useState(null);
-  const types = [
-    { description: "FPS" },
-    { description: "FIGHT" },
-    { description: "RACING" },
-    { description: "SPORT" },
-    { description: "MOBA" },
-  ];
+  const { types, type, setType } = useChampionshipData();
   return (
     <Dropdown
       value={type}

@@ -5,7 +5,7 @@ export default function ChampionshipRegister(params) {
   return (
     <>
       <div>
-        <h2>Championship</h2>
+        <h2>New Championship</h2>
       </div>
       <Divider />
       <ChampionshipRegisterForm />

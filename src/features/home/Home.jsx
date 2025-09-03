@@ -1,7 +1,12 @@
+import { Divider } from "primereact/divider";
+
 export default function Home(params) {
   return (
-    <div>
-      <h1>Home</h1>
-    </div>
+    <>
+      <div>
+        <h2>Home</h2>
+      </div>
+      <Divider />
+    </>
   );
 }

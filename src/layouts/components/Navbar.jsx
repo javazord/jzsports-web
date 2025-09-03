@@ -60,6 +60,7 @@ export default function TemplateDemo() {
         {
           label: "Search",
           icon: "pi pi-search",
+          command: () => navigate("/championship-list"),
         },
       ],
     },
@@ -115,7 +116,9 @@ export default function TemplateDemo() {
     },
   ];
 
-  const start = <img alt="logo" src="./navbar.png" height="40" />;
+  const start = (
+    <img className="mr-2" alt="logo" src="./navbar.png" height="40" />
+  );
 
   const end = (
     <div className="flex align-items-center gap-2">

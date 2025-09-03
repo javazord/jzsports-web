@@ -5,6 +5,7 @@ import TeamList from "../features/teams/pages/TeamList";
 import Home from "../features/home/Home";
 import About from "../features/about/About";
 import Settings from "../features/settings/pages/Settings";
+import ChampionshipList from "../features/championships/pages/ChampionshipList";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -15,6 +16,7 @@ export default function AppRoutes() {
         element={<ChampionshipRegister />}
       ></Route>
       <Route path="/team-list" element={<TeamList />}></Route>
+      <Route path="/championship-list" element={<ChampionshipList />}></Route>
       <Route path="/about" element={<About />}></Route>
       <Route path="/settings" element={<Settings />}></Route>
     </Routes>

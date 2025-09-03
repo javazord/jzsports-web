@@ -54,7 +54,7 @@ export default function ChampionshipRegisterForm() {
       <Divider />
 
       <div className="grid justify-content-center">
-        <div className="col-12 md:col-12 lg:col-8 flex flex-column">
+        <div className="col-12 md:col-12 lg:col-8 flex flex-column h-full">
           <div className="flex flex-column mb-3">
             <label className="mb-2">Team Name</label>
             <div className="flex gap-2">
@@ -76,11 +76,12 @@ export default function ChampionshipRegisterForm() {
             selection={selectedTeams}
             onSelectionChange={(e) => setSelectedTeams(e.value)}
             dataKey="id"
-            tableStyle={{ minWidth: "50rem" }}
             paginator
             scrollable
             scrollHeight="400px"
             globalFilter={globalFilter}
+            tableStyle={{ minWidth: "20rem" }}
+            size="small"
             rows={5}
             rowsPerPageOptions={[5, 10, 15, 20, 50]}
           >

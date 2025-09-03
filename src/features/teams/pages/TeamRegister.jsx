@@ -6,7 +6,7 @@ export default function TeamRegister() {
   return (
     <>
       <div className="">
-        <h2>Register Team</h2>
+        <h2>New Team</h2>
         <Divider />
       </div>
       <TeamRegisterForm />
