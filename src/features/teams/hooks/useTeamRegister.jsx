@@ -48,11 +48,11 @@ export function useTeamRegister() {
     <Button
       icon="pi pi-plus"
       rounded
+      outlined
       text
-      raised
-      size="small"
       severity="success"
-      aria-label="Bookmark"
+      tooltip="Add Player"
+      tooltipOptions={{ position: "top" }}
       onClick={() => addPlayer(rowData)}
     />
   );
@@ -61,9 +61,11 @@ export function useTeamRegister() {
     <Button
       icon="pi pi-minus"
       rounded
+      outlined
       text
-      raised
-      className="p-button-sm p-button-danger"
+      severity="danger"
+      tooltip="Remove Player"
+      tooltipOptions={{ position: "top" }}
       onClick={() => removePlayer(rowData)}
     />
   );

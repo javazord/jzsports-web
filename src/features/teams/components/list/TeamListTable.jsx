@@ -3,21 +3,23 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import SelectPlayerList from "../../../championships/data/SelectPlayerList";
+import ConfirmDeleteDialog from "../../../../layouts/components/ConfirmDeleteDialog";
 
 export default function TeamListTable() {
   const [availablePlayers, setAvailablePlayers] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // input de busca
   const [globalFilter, setGlobalFilter] = useState(null); // filtro aplicado
+  const [selectedTeam, setSelectedTeam] = useState(null); // time selecionado p/ deletar
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
   useEffect(() => {
     let players = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i < 10; i++) {
       let player = {
-        key: i,
-        data: {
-          name: `Tchotchomeri ${i}`,
-          nickname: `Nick${i}`,
-        },
+        id: i,
+        name: `Tchotchomeri ${i}`,
+        nickname: `Nick ${i}`,
       };
       players.push(player);
     }
@@ -31,6 +33,15 @@ export default function TeamListTable() {
     />
   );
 
+  const editButtonTeam = (rowData) => {
+    console.log(rowData.id);
+  };
+
+  const deleteButtonTeam = (rowData) => {
+    setSelectedTeam(rowData);
+    setDeleteDialogVisible(true);
+  };
+
   const addActionsButtons = (rowData) => (
     <div className="flex gap-2">
       <Button
@@ -39,6 +50,9 @@ export default function TeamListTable() {
         text
         severity="success"
         aria-label="Edit"
+        tooltip="Edit Team"
+        tooltipOptions={{ position: "top" }}
+        onClick={() => editButtonTeam(rowData)}
       />
       <Button
         icon="pi pi-trash"
@@ -46,6 +60,9 @@ export default function TeamListTable() {
         text
         severity="danger"
         aria-label="Edit"
+        tooltip="Delete Team"
+        tooltipOptions={{ position: "top" }}
+        onClick={() => deleteButtonTeam(rowData)}
       />
     </div>
   );
@@ -85,13 +102,24 @@ export default function TeamListTable() {
             removableSort
             stripedRows
           >
-            <Column header="Photo" body={imagePlayers} />
-            <Column field="data.name" header="Name" sortable />
-            <Column field="data.nickname" header="Players" sortable />
+            <Column field="photo" header="Photo" body={imagePlayers} />
+            <Column field="name" header="Name" sortable />
+            <Column
+              field="nickname"
+              body={<SelectPlayerList />}
+              header="Players"
+            />
             <Column header="Action" body={addActionsButtons} />
           </DataTable>
         </div>
       </div>
+
+      <ConfirmDeleteDialog
+        visible={deleteDialogVisible}
+        onHide={() => setDeleteDialogVisible(false)}
+        entity={selectedTeam}
+        entityType={"team"}
+      />
     </>
   );
 }

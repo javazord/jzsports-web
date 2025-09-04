@@ -1,4 +1,4 @@
-import Navbar from "./layouts/components/Navbar";
+import Navbar from "./layouts/Navbar";
 import AppRoutes from "./routes/AppRoutes";
 
 import "primereact/resources/themes/saga-blue/theme.css";

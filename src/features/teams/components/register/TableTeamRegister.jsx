@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
@@ -37,6 +37,11 @@ export default function TableTeamRegister() {
     setAvailablePlayers(players);
   }, []);
 
+  const searchButton = () => {
+    load();
+    setGlobalFilter(searchTerm);
+  };
+
   return (
     <>
       <Divider />
@@ -68,7 +73,8 @@ export default function TableTeamRegister() {
                   <Button
                     icon="pi pi-search"
                     label="Search"
-                    onClick={() => setGlobalFilter(searchTerm)}
+                    onClick={searchButton}
+                    loading={loading}
                   />
                 </div>
               </>

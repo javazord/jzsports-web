@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { useChampionshipData } from "../../data/useChampionshipData";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
+import { Tooltip } from "primereact/tooltip";
 
 export default function ChampionshipListTable() {
   const [championships, setChampionships] = useState([]);
@@ -31,7 +32,6 @@ export default function ChampionshipListTable() {
     setChampionships(tempChampionship);
   }, []);
 
-  // renderiza as TAGS de status
   const statusBodyTemplate = (rowData) => {
     switch (rowData.status) {
       case "IN_PROGRESS":
@@ -50,7 +50,6 @@ export default function ChampionshipListTable() {
     }
   };
 
-  // renderiza o nome do torneio e imagem se estiver finalizado
   const championshipBodyTemplate = (rowData) => {
     const finishedImg =
       "https://cdn-icons-png.flaticon.com/512/8348/8348232.png";
@@ -58,11 +57,21 @@ export default function ChampionshipListTable() {
       "https://cdn-icons-png.flaticon.com/512/1077/1077196.png";
     return (
       <div className="flex align-items-center gap-2">
+        {/* Tooltip associado à imagem */}
+        <Tooltip
+          target={`#status-img-${rowData.id}`}
+          content={
+            rowData.status === "FINISHED" ? rowData.createdBy : "No Winner"
+          }
+          position="top"
+        />
         <img
+          id={`status-img-${rowData.id}`}
           src={rowData.status === "FINISHED" ? finishedImg : defaultImg}
           width={32}
-          alt="finished icon"
+          alt="status icon"
         />
+
         <span>{rowData.name}</span>
       </div>
     );
@@ -70,13 +79,23 @@ export default function ChampionshipListTable() {
 
   const addActionsButtons = (rowData) => (
     <div className="flex gap-2">
-      <Button icon="pi pi-eye" rounded text severity="info" aria-label="View" />
+      <Button
+        icon="pi pi-eye"
+        rounded
+        text
+        severity="info"
+        aria-label="View"
+        tooltip="View"
+        tooltipOptions={{ position: "top" }}
+      />
       <Button
         icon="pi pi-pencil"
         rounded
         text
         severity="success"
         aria-label="Edit"
+        tooltip="Edit"
+        tooltipOptions={{ position: "top" }}
       />
       <Button
         icon="pi pi-trash"
@@ -84,6 +103,8 @@ export default function ChampionshipListTable() {
         text
         severity="danger"
         aria-label="Delete"
+        tooltip="Delete"
+        tooltipOptions={{ position: "top" }}
       />
     </div>
   );
@@ -102,8 +123,8 @@ export default function ChampionshipListTable() {
   };
 
   return (
-    <div className="grid justify-content-center">
-      <div className="col-12 md:col-12 lg:col-10 flex flex-column lg:mt-5">
+    <div className="grid justify-content-center align-content-center lg:mt-8">
+      <div className="col-12 md:col-12 lg:col-10 flex flex-column">
         <DataTable
           value={championships}
           paginator

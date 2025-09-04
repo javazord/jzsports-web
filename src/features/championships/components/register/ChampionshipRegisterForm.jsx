@@ -89,10 +89,19 @@ export default function ChampionshipRegisterForm() {
               selectionMode="multiple"
               headerStyle={{ width: "2rem" }}
             ></Column>
-            <Column body={imageTeamRender} header="Photo" sortable />
+            <Column
+              field="photo"
+              body={imageTeamRender}
+              header="Photo"
+              sortable
+            />
             <Column field="name" header="Name" sortable />
             <Column field="createdAt" header="Created At" sortable />
-            <Column body={<SelectPlayerList />} header="Players" />
+            <Column
+              field="players"
+              body={<SelectPlayerList />}
+              header="Players"
+            />
           </DataTable>
         </div>
         <Divider />
