@@ -70,7 +70,7 @@ export default function TeamListTable() {
   return (
     <>
       <div className="grid justify-content-center">
-        <div className="col-12 md:col-12 lg:col-6 flex flex-column">
+        <div className="col-12 md:col-12 lg:col-6 flex flex-column lg:mt-8">
           {/* Filtro acima da tabela */}
           <div className="flex flex-column mb-3">
             <label className="mb-2">Name</label>

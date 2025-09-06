@@ -10,7 +10,11 @@ export default class PlayerService extends ApiService {
   }
 
   update(player) {
-    return this.put("", player);
+    return this.put(`/${player.id}`, player);
+  }
+
+  updateProfile(player) {
+    return this.put(`/${player.id}/player-profile`, player);
   }
 
   getPlayer(id) {

@@ -4,10 +4,21 @@ import { ListBox } from "primereact/listbox";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { RadioButton } from "primereact/radiobutton";
+import PlayerService from "../../../api/service/playerService";
 
 export default function Settings() {
   const [selectedOption, setSelectedOption] = useState("profile");
   const [theme, setTheme] = useState("white");
+  const [player, setPlayer] = useState({
+    id: 1,
+    username: "",
+    nickname: "",
+    password: "",
+    email: "",
+    color: "",
+    photoURL: "",
+  });
+  const playerService = new PlayerService();
 
   const options = [
     { icon: "pi pi-user-edit", label: "Profile", value: "profile" },
@@ -24,6 +35,23 @@ export default function Settings() {
     );
   };
 
+  const onChangePlayer = (e) => {
+    const { name, value } = e.target;
+    setPlayer((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const editPlayer = () => {
+    console.log(player);
+    try {
+      playerService.updateProfile(player).then((response) => {
+        console.log("atualizou!" + response);
+      });
+    } catch (error) {}
+  };
+
   const renderContent = () => {
     switch (selectedOption) {
       case "profile":
@@ -31,18 +59,64 @@ export default function Settings() {
           <div className="flex flex-column gap-3">
             <h2 className="m-0">Profile Settings</h2>
             <span className="p-float-label">
-              <InputText id="username" className="w-full" />
+              <InputText
+                id="username"
+                name="username"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
               <label>Username</label>
             </span>
             <span className="p-float-label">
-              <InputText id="nickName" className="w-full" />
+              <InputText
+                id="nickname"
+                name="nickname"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
               <label>Nickname</label>
             </span>
             <span className="p-float-label">
-              <InputText id="email" className="w-full" />
+              <InputText
+                id="password"
+                name="password"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
+              <label>Password</label>
+            </span>
+            <span className="p-float-label">
+              <InputText
+                id="email"
+                name="email"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
               <label>Email</label>
             </span>
-            <Button label="Save" icon="pi pi-save" />
+            <span className="p-float-label">
+              <InputText
+                id="color"
+                name="color"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
+              <label>Color</label>
+            </span>
+            <span className="p-float-label">
+              <InputText
+                id="photoURL"
+                name="photoURL"
+                onChange={onChangePlayer}
+                className="w-full"
+              />
+              <label>PhotoURL</label>
+            </span>
+            <Button
+              label="Save"
+              onClick={() => editPlayer()}
+              icon="pi pi-save"
+            />
           </div>
         );
 
