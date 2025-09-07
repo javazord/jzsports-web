@@ -1,17 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Divider } from "primereact/divider";
-import { useTeamRegister } from "../../hooks/useTeamRegister";
+import PlayerImage from "../images/PlayerImage";
+import { useTeam } from "../../context/TeamContext";
 
 export default function TableTeamRegister() {
   const {
     load,
-    imagePlayers,
-    addActionTemplate,
-    removeActionTemplate,
     availablePlayers,
     setAvailablePlayers,
     selectedPlayers,
@@ -19,8 +17,14 @@ export default function TableTeamRegister() {
     setSearchTerm,
     globalFilter,
     setGlobalFilter,
+    addPlayer,
+    removePlayer,
     loading,
-  } = useTeamRegister();
+    team,
+    setTeam,
+    create,
+    searchButton,
+  } = useTeam();
 
   useEffect(() => {
     let players = [];
@@ -35,12 +39,11 @@ export default function TableTeamRegister() {
       players.push(player);
     }
     setAvailablePlayers(players);
-  }, []);
-
-  const searchButton = () => {
-    load();
-    setGlobalFilter(searchTerm);
-  };
+    setTeam((prev) => ({
+      ...prev,
+      playersList: selectedPlayers,
+    }));
+  }, [selectedPlayers]);
 
   return (
     <>
@@ -80,10 +83,27 @@ export default function TableTeamRegister() {
               </>
             }
           >
-            <Column header="Photo" body={imagePlayers} />
+            <Column
+              header="Photo"
+              body={(rowData) => <PlayerImage rowData={rowData} />}
+            />
             <Column field="data.name" header="Name" sortable />
             <Column field="data.nickname" header="Nickname" sortable />
-            <Column header="Action" body={addActionTemplate} />
+            <Column
+              header="Action"
+              body={(rowData) => (
+                <Button
+                  icon="pi pi-plus"
+                  rounded
+                  outlined
+                  text
+                  severity="success"
+                  tooltip="Add Player"
+                  tooltipOptions={{ position: "top" }}
+                  onClick={() => addPlayer(rowData)}
+                />
+              )}
+            />
           </DataTable>
         </div>
 
@@ -101,10 +121,27 @@ export default function TableTeamRegister() {
             removableSort
             stripedRows
           >
-            <Column header="Photo" body={imagePlayers} />
+            <Column
+              header="Photo"
+              body={(rowData) => <PlayerImage rowData={rowData} />}
+            />
             <Column field="data.name" header="Name" sortable />
             <Column field="data.nickname" header="Nickname" sortable />
-            <Column header="Action" body={removeActionTemplate} />
+            <Column
+              header="Action"
+              body={(rowData) => (
+                <Button
+                  icon="pi pi-minus"
+                  rounded
+                  outlined
+                  text
+                  severity="danger"
+                  tooltip="Remove Player"
+                  tooltipOptions={{ position: "top" }}
+                  onClick={() => removePlayer(rowData)}
+                />
+              )}
+            />
           </DataTable>
         </div>
       </div>
@@ -114,7 +151,7 @@ export default function TableTeamRegister() {
           label="Submit"
           icon="pi pi-check"
           loading={loading}
-          onClick={load}
+          onClick={create}
         />
       </div>
     </>

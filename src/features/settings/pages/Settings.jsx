@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Divider } from "primereact/divider";
 import { ListBox } from "primereact/listbox";
 import { InputText } from "primereact/inputtext";
+import { FloatLabel } from "primereact/floatlabel";
 import { Button } from "primereact/button";
 import { RadioButton } from "primereact/radiobutton";
 import PlayerService from "../../../api/service/playerService";
@@ -44,7 +45,6 @@ export default function Settings() {
   };
 
   const editPlayer = () => {
-    console.log(player);
     try {
       playerService.updateProfile(player).then((response) => {
         console.log("atualizou!" + response);
@@ -58,7 +58,7 @@ export default function Settings() {
         return (
           <div className="flex flex-column gap-3">
             <h2 className="m-0">Profile Settings</h2>
-            <span className="p-float-label">
+            <FloatLabel className="mt-2">
               <InputText
                 id="username"
                 name="username"
@@ -66,8 +66,8 @@ export default function Settings() {
                 className="w-full"
               />
               <label>Username</label>
-            </span>
-            <span className="p-float-label">
+            </FloatLabel>
+            <FloatLabel className="mt-2">
               <InputText
                 id="nickname"
                 name="nickname"
@@ -75,8 +75,8 @@ export default function Settings() {
                 className="w-full"
               />
               <label>Nickname</label>
-            </span>
-            <span className="p-float-label">
+            </FloatLabel>
+            <FloatLabel className="mt-2">
               <InputText
                 id="password"
                 name="password"
@@ -84,8 +84,8 @@ export default function Settings() {
                 className="w-full"
               />
               <label>Password</label>
-            </span>
-            <span className="p-float-label">
+            </FloatLabel>
+            <FloatLabel className="mt-2">
               <InputText
                 id="email"
                 name="email"
@@ -93,8 +93,8 @@ export default function Settings() {
                 className="w-full"
               />
               <label>Email</label>
-            </span>
-            <span className="p-float-label">
+            </FloatLabel>
+            <FloatLabel className="mt-2">
               <InputText
                 id="color"
                 name="color"
@@ -102,8 +102,8 @@ export default function Settings() {
                 className="w-full"
               />
               <label>Color</label>
-            </span>
-            <span className="p-float-label">
+            </FloatLabel>
+            <FloatLabel className="mt-2">
               <InputText
                 id="photoURL"
                 name="photoURL"
@@ -111,12 +111,14 @@ export default function Settings() {
                 className="w-full"
               />
               <label>PhotoURL</label>
-            </span>
-            <Button
-              label="Save"
-              onClick={() => editPlayer()}
-              icon="pi pi-save"
-            />
+            </FloatLabel>
+            <div className="flex justify-content-end flex-wrap">
+              <Button
+                label="Save"
+                onClick={() => editPlayer()}
+                icon="pi pi-save"
+              />
+            </div>
           </div>
         );
 
@@ -144,7 +146,9 @@ export default function Settings() {
               />
               <label htmlFor="dark">Black</label>
             </div>
-            <Button label="Apply" icon="pi pi-check" />
+            <div className="flex justify-content-end flex-wrap">
+              <Button label="Apply" icon="pi pi-check" />
+            </div>
           </div>
         );
 

@@ -1,6 +1,8 @@
 import { InputText } from "primereact/inputtext";
+import { useTeam } from "../../context/TeamContext";
 
 export default function TeamRegisterForm() {
+  const { team, onChangeTeam } = useTeam();
   return (
     <>
       <div className="grid justify-content-center">
@@ -11,7 +13,12 @@ export default function TeamRegisterForm() {
             <span className="p-inputgroup-addon">
               <i className="pi pi-users"></i>
             </span>
-            <InputText name="teamName" />
+            <InputText
+              id="teamName"
+              name="teamName"
+              value={team.teamName}
+              onChange={onChangeTeam}
+            />
           </div>
         </div>
 
@@ -20,7 +27,12 @@ export default function TeamRegisterForm() {
           <label>Photo</label>
           <div className="p-inputgroup flex-1">
             <span className="p-inputgroup-addon">URL</span>
-            <InputText name="photoURL" />
+            <InputText
+              id="photoURL"
+              name="photoURL"
+              value={team.photoURL}
+              onChange={onChangeTeam}
+            />
           </div>
         </div>
       </div>

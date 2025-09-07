@@ -1,4 +1,3 @@
-import { Button } from "primereact/button";
 import { useState } from "react";
 
 export function useTeamRegister() {
@@ -10,7 +9,6 @@ export function useTeamRegister() {
   const [team, setTeam] = useState({
     teamName: "",
     photoURL: "",
-    createdAt: "",
     playersList: [],
   });
   const [teamErrors, setTeamErrors] = useState({
@@ -27,12 +25,13 @@ export function useTeamRegister() {
     }, 2000);
   };
 
-  const imagePlayers = (rowData) => (
-    <img
-      src={rowData?.data?.photo || "https://i.redd.it/semgwb8aiex71.jpg"}
-      className="w-3rem shadow-2 border-round"
-    />
-  );
+  const onChangeTeam = (e) => {
+    const { name, value } = e.target;
+    setTeam((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const addPlayer = (player) => {
     setAvailablePlayers((prev) => prev.filter((p) => p.key !== player.key));
@@ -44,37 +43,17 @@ export function useTeamRegister() {
     setAvailablePlayers((prev) => [...prev, player]);
   };
 
-  const addActionTemplate = (rowData) => (
-    <Button
-      icon="pi pi-plus"
-      rounded
-      outlined
-      text
-      severity="success"
-      tooltip="Add Player"
-      tooltipOptions={{ position: "top" }}
-      onClick={() => addPlayer(rowData)}
-    />
-  );
+  const searchButton = () => {
+    load();
+    setGlobalFilter(searchTerm);
+  };
 
-  const removeActionTemplate = (rowData) => (
-    <Button
-      icon="pi pi-minus"
-      rounded
-      outlined
-      text
-      severity="danger"
-      tooltip="Remove Player"
-      tooltipOptions={{ position: "top" }}
-      onClick={() => removePlayer(rowData)}
-    />
-  );
+  const create = () => {
+    console.log(team);
+  };
 
   return {
     load,
-    imagePlayers,
-    addActionTemplate,
-    removeActionTemplate,
     availablePlayers,
     setAvailablePlayers,
     selectedPlayers,
@@ -82,6 +61,13 @@ export function useTeamRegister() {
     setSearchTerm,
     globalFilter,
     setGlobalFilter,
+    addPlayer,
+    removePlayer,
     loading,
+    onChangeTeam,
+    team,
+    setTeam,
+    create,
+    searchButton,
   };
 }

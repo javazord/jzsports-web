@@ -123,7 +123,7 @@ export default function ChampionshipListTable() {
   };
 
   return (
-    <div className="grid justify-content-center align-content-center lg:mt-8">
+    <div className="grid justify-content-center align-content-center lg:mt-4">
       <div className="col-12 md:col-12 lg:col-10 flex flex-column">
         <DataTable
           value={championships}
