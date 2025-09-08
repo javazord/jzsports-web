@@ -1,117 +1,245 @@
-import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
-import { useEffect, useState } from "react";
-import EChampionshipData from "../../data/eChampionshipData";
+import { useState } from "react";
 import { DataTable } from "primereact/datatable";
-import { Divider } from "primereact/divider";
-import { UseChampionshipRegister } from "../hooks/UseChampionshipRegister";
 import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import SelectPlayerList from "../../data/SelectPlayerList";
+import { Divider } from "primereact/divider";
+import { Dropdown } from "primereact/dropdown";
+import { Calendar } from "primereact/calendar";
+import EChampionshipData from "../../data/eChampionshipData";
+import TeamService from "../../../../api/service/teamService";
+import ChampionshipService from "../../../../api/service/championshipService";
+import TeamImage from "../../../players/components/images/PlayerImage";
 
 export default function ChampionshipRegisterForm() {
-  const [teams, setTeams] = useState([]);
-  const [selectedTeams, setSelectedTeams] = useState(null);
+  const [teams, setTeams] = useState([]); // tabela começa vazia
   const [rowClick, setRowClick] = useState(true);
-  const { imageTeamRender } = UseChampionshipRegister();
-  const [searchTerm, setSearchTerm] = useState(""); // input de busca
-  const [globalFilter, setGlobalFilter] = useState(null); // filtro aplicado
-  const [loading, setLoading] = useState();
+  const [selectedTeams, setSelectedTeams] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [championship, setChampionship] = useState({
+    championshipName: "",
+    type: "",
+    teamList: [],
+  });
+  const teamService = new TeamService();
+  const championshipService = new ChampionshipService();
 
-  const load = () => {
+  // filtros por coluna (controlados)
+  const [teamFilter, setTeamFilter] = useState({
+    teamName: "",
+    createdAt: null, // Date
+  });
+
+  const canSearch = Boolean(
+    teamFilter.teamName?.trim() || teamFilter.createdAt
+  );
+
+  const handleSearch = async () => {
+    if (!canSearch) return; // evita consulta sem filtros
+
     setLoading(true);
+    try {
+      // normaliza a data para enviar ao backend (yyyy-mm-dd)
+      const createdAtStr = teamFilter.createdAt
+        ? new Date(teamFilter.createdAt).toISOString().slice(0, 10)
+        : null;
 
-    setTimeout(() => {
+      const payload = {
+        teamName: teamFilter.teamName?.trim() || null,
+        createdAt: createdAtStr,
+      };
+
+      const response = await teamService.search(payload);
+      setTeams(response.data || []);
+    } catch (err) {
+      console.error("Erro ao buscar times:", err);
+      setTeams([]);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
-  useEffect(() => {
-    const randomDate = new Date(2025, 0, 1);
-    const tempTeams = [];
-    for (let i = 0; i < 10; i++) {
-      tempTeams.push({
-        id: i,
-        name: `Team ${i}`,
-        createdAt: randomDate.toLocaleDateString(),
-      });
-      setTeams(tempTeams);
-    }
-  }, []);
+  const handleClear = () => {
+    setTeams([]); // limpa tabela
+    setTeamFilter({ teamName: "", createdAt: null });
+  };
+
+  const playersOptionTemplate = (option) => (
+    <div className="flex align-items-center">
+      <img
+        alt={option.photoURL}
+        src={option.photoURL}
+        className="mr-2"
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: "50%",
+          objectFit: "cover",
+        }}
+      />
+      <div>{option.nickname}</div>
+    </div>
+  );
+
+  const onHandleChange = (e) => {
+    const { name, value } = e.target;
+    setChampionship((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const create = () => {
+    championshipService.save(championship).then((response) => ({}));
+  };
 
   return (
     <>
       <div className="grid justify-content-center">
         <div className="field col-12 md:col-12 lg:col-4 flex flex-column">
           <label>Championship Name</label>
-          <InputText name="championshipName" />
+          <InputText
+            name="championshipName"
+            value={championship.championshipName}
+            onChange={onHandleChange}
+          />
         </div>
         <div className="field col-12 md:col-12 lg:col-4 flex flex-column">
           <label>Type</label>
-          <EChampionshipData />
+          <EChampionshipData onChange={onHandleChange} />
         </div>
       </div>
+
       <Divider />
 
+      {/* Ações gerais de filtro */}
       <div className="grid justify-content-center">
-        <div className="col-12 md:col-12 lg:col-8 flex flex-column h-full">
-          <div className="flex flex-column mb-3">
-            <label className="mb-2">Team Name</label>
-            <div className="flex gap-2">
-              <InputText
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search Team"
-              />
-              <Button
-                icon="pi pi-search"
-                label="Search"
-                onClick={() => setGlobalFilter(searchTerm)}
-              />
-            </div>
+        <div className="col-12 md:col-12 lg:col-8 flex flex-column gap-2">
+          <div className="flex gap-2 justify-content-end">
+            <Button
+              icon="pi pi-search"
+              label="Search"
+              onClick={handleSearch}
+              loading={loading}
+              disabled={!canSearch}
+            />
+            <Button
+              icon="pi pi-filter-slash"
+              label="Clear"
+              className="p-button-secondary"
+              onClick={handleClear}
+              disabled={loading && !teams.length}
+            />
           </div>
+
           <DataTable
             value={teams}
+            dataKey="id"
+            paginator
+            rows={5}
+            rowsPerPageOptions={[5, 10, 15, 20, 50]}
+            scrollable
+            scrollHeight="400px"
+            tableStyle={{ minWidth: "24rem" }}
+            size="small"
+            loading={loading}
+            emptyMessage="No team found. Enter the filters in the columns and click in Search."
+            filterDisplay="row" // habilita inputs na linha de filtros
+            showGridlines
             selectionMode={rowClick ? null : "checkbox"}
             selection={selectedTeams}
             onSelectionChange={(e) => setSelectedTeams(e.value)}
-            dataKey="id"
-            paginator
-            scrollable
-            scrollHeight="400px"
-            globalFilter={globalFilter}
-            tableStyle={{ minWidth: "20rem" }}
-            size="small"
-            rows={5}
-            rowsPerPageOptions={[5, 10, 15, 20, 50]}
           >
+            <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
+
             <Column
-              selectionMode="multiple"
-              headerStyle={{ width: "2rem" }}
-            ></Column>
-            <Column
-              field="photo"
-              body={imageTeamRender}
+              field="photoURL"
               header="Photo"
+              body={(rowData) => <TeamImage rowData={rowData} />}
               sortable
+              headerStyle={{ width: "6rem" }}
             />
-            <Column field="name" header="Name" sortable />
-            <Column field="createdAt" header="Created At" sortable />
+
+            {/* Nome do time - filtro na própria coluna */}
             <Column
-              field="players"
-              body={<SelectPlayerList />}
+              field="teamName"
+              header="Name"
+              sortable
+              filter
+              filterField="teamName"
+              filterElement={
+                <InputText
+                  value={teamFilter.teamName}
+                  onChange={(e) =>
+                    setTeamFilter((prev) => ({
+                      ...prev,
+                      teamName: e.target.value,
+                    }))
+                  }
+                  placeholder="Team Name"
+                  className="w-full"
+                />
+              }
+            />
+
+            {/* Data de criação - filtro na própria coluna */}
+            <Column
+              field="createdAt"
+              header="Created At"
+              sortable
+              filter
+              filterField="createdAt"
+              filterElement={
+                <Calendar
+                  value={teamFilter.createdAt}
+                  onChange={(e) =>
+                    setTeamFilter((prev) => ({ ...prev, createdAt: e.value }))
+                  }
+                  dateFormat="dd/mm/yy"
+                  showIcon
+                  placeholder="Select Date"
+                  className="w-full"
+                />
+              }
+              body={(row) =>
+                row.createdAt
+                  ? new Date(row.createdAt).toLocaleDateString()
+                  : "-"
+              }
+              style={{ width: "25%" }}
+              headerStyle={{ width: "12rem" }}
+            />
+
+            <Column
+              field="nickname"
               header="Players"
+              body={(rowData) => (
+                <Dropdown
+                  value={rowData.playersList?.[0]}
+                  options={rowData.playersList}
+                  optionLabel="nickname"
+                  className="w-full"
+                  filter
+                  filterDelay={200}
+                  valueTemplate={playersOptionTemplate}
+                  itemTemplate={playersOptionTemplate}
+                  placeholder="Selecione um player"
+                />
+              )}
+              style={{ width: "25%" }}
             />
           </DataTable>
         </div>
-        <Divider />
       </div>
+
+      <Divider />
+
       <div className="flex justify-content-end flex-wrap m-4">
         <Button
           label="Submit"
           icon="pi pi-check"
           loading={loading}
-          onClick={load}
+          onClick={() => create}
         />
       </div>
     </>

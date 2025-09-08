@@ -3,35 +3,25 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import SelectPlayerList from "../../../championships/data/SelectPlayerList";
 import ConfirmDeleteDialog from "../../../../layouts/components/ConfirmDeleteDialog";
+import TeamImage from "../../../players/components/images/PlayerImage";
+import { Dropdown } from "primereact/dropdown";
+import TeamService from "../../../../api/service/teamService";
 
 export default function TeamListTable() {
-  const [availablePlayers, setAvailablePlayers] = useState([]);
+  const [availableTeams, setAvailableTeams] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // input de busca
   const [globalFilter, setGlobalFilter] = useState(null); // filtro aplicado
   const [selectedTeam, setSelectedTeam] = useState(null); // time selecionado p/ deletar
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const teamService = new TeamService();
 
   useEffect(() => {
-    let players = [];
-    for (let i = 1; i < 10; i++) {
-      let player = {
-        id: i,
-        name: `Tchotchomeri ${i}`,
-        nickname: `Nick ${i}`,
-      };
-      players.push(player);
-    }
-    setAvailablePlayers(players);
+    teamService.getByPlayer_Id(3).then((response) => {
+      setAvailableTeams(response.data);
+      console.log(availableTeams);
+    });
   }, []);
-
-  const imagePlayers = () => (
-    <img
-      src="https://i.redd.it/semgwb8aiex71.jpg"
-      className="w-3rem shadow-2 border-round"
-    />
-  );
 
   const editButtonTeam = (rowData) => {
     console.log(rowData.id);
@@ -67,6 +57,20 @@ export default function TeamListTable() {
     </div>
   );
 
+  const playersOptionTemplate = (option) => {
+    return (
+      <div className="flex align-items-center">
+        <img
+          alt={option.photoURL}
+          src={option.photoURL}
+          className={`mr-2 flag flag-${option.nickname.toLowerCase()}`}
+          style={{ width: "22px", borderRadius: "50%" }}
+        />
+        <div>{option.nickname}</div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="grid justify-content-center">
@@ -90,7 +94,7 @@ export default function TeamListTable() {
 
           {/* Tabela */}
           <DataTable
-            value={availablePlayers}
+            value={availableTeams}
             globalFilter={globalFilter}
             paginator
             scrollable
@@ -102,12 +106,28 @@ export default function TeamListTable() {
             removableSort
             stripedRows
           >
-            <Column field="photo" header="Photo" body={imagePlayers} />
-            <Column field="name" header="Name" sortable />
+            <Column
+              field="photoURL"
+              header="Photo"
+              body={(rowData) => <TeamImage rowData={rowData} />}
+            />
+            <Column field="teamName" header="Name" sortable />
             <Column
               field="nickname"
-              body={<SelectPlayerList />}
               header="Players"
+              style={{ width: "10%" }}
+              body={(rowData) => (
+                <Dropdown
+                  value={rowData.playersList[0]}
+                  options={rowData.playersList}
+                  optionLabel="nickname"
+                  className="w-full"
+                  filter
+                  filterDelay={200}
+                  valueTemplate={playersOptionTemplate}
+                  itemTemplate={playersOptionTemplate}
+                />
+              )}
             />
             <Column header="Action" body={addActionsButtons} />
           </DataTable>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TeamService from "../../../api/service/teamService";
 
 export function useTeamRegister() {
   const [availablePlayers, setAvailablePlayers] = useState([]);
@@ -6,6 +7,7 @@ export function useTeamRegister() {
   const [searchTerm, setSearchTerm] = useState(""); // input de busca
   const [globalFilter, setGlobalFilter] = useState(null); // filtro aplicado
   const [loading, setLoading] = useState(false);
+  const teamService = new TeamService();
   const [team, setTeam] = useState({
     teamName: "",
     photoURL: "",
@@ -34,12 +36,20 @@ export function useTeamRegister() {
   };
 
   const addPlayer = (player) => {
-    setAvailablePlayers((prev) => prev.filter((p) => p.key !== player.key));
-    setSelectedPlayers((prev) => [...prev, player]);
+    setAvailablePlayers((prev) => prev.filter((p) => p.id !== player.id));
+    setSelectedPlayers((prev) => {
+      const updated = [...prev, player];
+      setTeam((teamPrev) => ({ ...teamPrev, playersList: updated }));
+      return updated;
+    });
   };
 
   const removePlayer = (player) => {
-    setSelectedPlayers((prev) => prev.filter((p) => p.key !== player.key));
+    setSelectedPlayers((prev) => {
+      const updated = prev.filter((p) => p.id !== player.id);
+      setTeam((teamPrev) => ({ ...teamPrev, playersList: updated }));
+      return updated;
+    });
     setAvailablePlayers((prev) => [...prev, player]);
   };
 
@@ -49,7 +59,9 @@ export function useTeamRegister() {
   };
 
   const create = () => {
-    console.log(team);
+    teamService.save(team).then((response) => {
+      console.log(response.data);
+    });
   };
 
   return {
