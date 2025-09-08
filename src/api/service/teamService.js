@@ -33,6 +33,9 @@ export default class TeamService extends ApiService {
     if (teamFilter.createdAt) {
       params += `?createdAt=${teamFilter.createdAt}`;
     }
+    if (teamFilter.playerId) {
+      params += `?playerId=${teamFilter.playerId}`;
+    }
     return this.get(params);
   }
 }

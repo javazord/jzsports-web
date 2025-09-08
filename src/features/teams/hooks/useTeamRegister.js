@@ -7,6 +7,7 @@ export function useTeamRegister() {
   const [searchTerm, setSearchTerm] = useState(""); // input de busca
   const [globalFilter, setGlobalFilter] = useState(null); // filtro aplicado
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
   const teamService = new TeamService();
   const [team, setTeam] = useState({
     teamName: "",
@@ -22,9 +23,12 @@ export function useTeamRegister() {
   const load = () => {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        setLoading(false);
+        resolve();
+      }, 2000);
+    });
   };
 
   const onChangeTeam = (e) => {
@@ -58,10 +62,17 @@ export function useTeamRegister() {
     setGlobalFilter(searchTerm);
   };
 
-  const create = () => {
-    teamService.save(team).then((response) => {
-      console.log(response.data);
-    });
+  const create = async () => {
+    try {
+      const response = await teamService.save(team);
+      await load();
+      setVisible(true);
+      setTeam({ teamName: "", photoURL: "", playersList: [] });
+      setSelectedPlayers([]);
+      setAvailablePlayers(team.playersList);
+    } catch (error) {
+      console.error("Erro ao criar time", error);
+    }
   };
 
   return {
@@ -81,5 +92,7 @@ export function useTeamRegister() {
     setTeam,
     create,
     searchButton,
+    visible,
+    setVisible,
   };
 }

@@ -7,6 +7,7 @@ import { Divider } from "primereact/divider";
 import PlayerImage from "../../../players/components/images/PlayerImage";
 import { useTeam } from "../../context/TeamContext";
 import PlayerService from "../../../../api/service/playerService";
+import { Dialog } from "primereact/dialog";
 
 export default function TableTeamRegister() {
   const {
@@ -24,6 +25,8 @@ export default function TableTeamRegister() {
     setTeam,
     create,
     searchButton,
+    visible,
+    setVisible,
   } = useTeam();
   const playerService = new PlayerService();
 
@@ -154,6 +157,22 @@ export default function TableTeamRegister() {
           onClick={create}
         />
       </div>
+      <Dialog
+        header="Success"
+        visible={visible}
+        style={{ width: "30vw" }}
+        onHide={() => setVisible(false)}
+        footer={
+          <Button
+            label="OK"
+            icon="pi pi-check"
+            onClick={() => setVisible(false)}
+            autoFocus
+          />
+        }
+      >
+        <p>Team created with success!</p>
+      </Dialog>
     </>
   );
 }

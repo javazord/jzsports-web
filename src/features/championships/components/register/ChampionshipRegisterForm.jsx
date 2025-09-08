@@ -10,11 +10,12 @@ import EChampionshipData from "../../data/eChampionshipData";
 import TeamService from "../../../../api/service/teamService";
 import ChampionshipService from "../../../../api/service/championshipService";
 import TeamImage from "../../../players/components/images/PlayerImage";
+import { Message } from "primereact/message";
 
 export default function ChampionshipRegisterForm() {
   const [teams, setTeams] = useState([]); // tabela começa vazia
   const [rowClick, setRowClick] = useState(true);
-  const [selectedTeams, setSelectedTeams] = useState(null);
+  const [selectedTeams, setSelectedTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [championship, setChampionship] = useState({
     championshipName: "",
@@ -28,6 +29,7 @@ export default function ChampionshipRegisterForm() {
   const [teamFilter, setTeamFilter] = useState({
     teamName: "",
     createdAt: null, // Date
+    playerId: 5,
   });
 
   const canSearch = Boolean(
@@ -115,21 +117,30 @@ export default function ChampionshipRegisterForm() {
       {/* Ações gerais de filtro */}
       <div className="grid justify-content-center">
         <div className="col-12 md:col-12 lg:col-8 flex flex-column gap-2">
-          <div className="flex gap-2 justify-content-end">
-            <Button
-              icon="pi pi-search"
-              label="Search"
-              onClick={handleSearch}
-              loading={loading}
-              disabled={!canSearch}
-            />
-            <Button
-              icon="pi pi-filter-slash"
-              label="Clear"
-              className="p-button-secondary"
-              onClick={handleClear}
-              disabled={loading && !teams.length}
-            />
+          <div className="flex flex-row justify-content-between align-items-center gap-2 w-full mb-2">
+            <div>
+              <Message
+                className="p-0"
+                severity="secondary"
+                text={`Total teams selected: ${selectedTeams.length}`}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                icon="pi pi-search"
+                label="Search"
+                onClick={handleSearch}
+                loading={loading}
+                disabled={!canSearch}
+              />
+              <Button
+                icon="pi pi-filter-slash"
+                label="Clear"
+                className="p-button-secondary"
+                onClick={handleClear}
+                disabled={loading && !teams.length}
+              />
+            </div>
           </div>
 
           <DataTable
@@ -156,7 +167,6 @@ export default function ChampionshipRegisterForm() {
               field="photoURL"
               header="Photo"
               body={(rowData) => <TeamImage rowData={rowData} />}
-              sortable
               headerStyle={{ width: "6rem" }}
             />
 

@@ -17,9 +17,8 @@ export default function TeamListTable() {
   const teamService = new TeamService();
 
   useEffect(() => {
-    teamService.getByPlayer_Id(3).then((response) => {
+    teamService.getByPlayer_Id(5).then((response) => {
       setAvailableTeams(response.data);
-      console.log(availableTeams);
     });
   }, []);
 
@@ -112,6 +111,7 @@ export default function TeamListTable() {
               body={(rowData) => <TeamImage rowData={rowData} />}
             />
             <Column field="teamName" header="Name" sortable />
+            <Column field="createdAt" header="Created At" sortable />
             <Column
               field="nickname"
               header="Players"
