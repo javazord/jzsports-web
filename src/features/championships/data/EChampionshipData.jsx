@@ -1,18 +1,16 @@
 import { Dropdown } from "primereact/dropdown";
-import { useChampionshipData } from "./useChampionshipData";
 
-export default function EChampionshipData() {
-  const { types, type, setType } = useChampionshipData();
+export default function EChampionshipData({ types, value, onChange }) {
   return (
     <Dropdown
-      value={type}
-      onChange={(e) => setType(e.value)}
+      value={value}
+      name="type"
+      onChange={onChange}
       options={types}
       optionLabel="description"
+      optionValue="description"
       placeholder="Select a type"
       className="w-full"
-      checkmark={true}
-      highlightOnSelect={false}
     />
   );
 }

@@ -14,6 +14,7 @@ export default function TeamRegisterForm() {
               <i className="pi pi-users"></i>
             </span>
             <InputText
+              autoFocus
               id="teamName"
               name="teamName"
               value={team.teamName}

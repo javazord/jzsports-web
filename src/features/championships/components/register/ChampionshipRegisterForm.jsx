@@ -6,94 +6,29 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import EChampionshipData from "../../data/eChampionshipData";
-import TeamService from "../../../../api/service/teamService";
-import ChampionshipService from "../../../../api/service/championshipService";
 import TeamImage from "../../../players/components/images/PlayerImage";
 import { Message } from "primereact/message";
+import { useChampionship } from "../../data/useChampionship";
+import PlayerOption from "../../../players/components/PlayerOption";
+import EChampionshipData from "../../data/EChampionshipData";
 
 export default function ChampionshipRegisterForm() {
-  const [teams, setTeams] = useState([]); // tabela começa vazia
   const [rowClick, setRowClick] = useState(true);
-  const [selectedTeams, setSelectedTeams] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [championship, setChampionship] = useState({
-    championshipName: "",
-    type: "",
-    teamList: [],
-  });
-  const teamService = new TeamService();
-  const championshipService = new ChampionshipService();
-
-  // filtros por coluna (controlados)
-  const [teamFilter, setTeamFilter] = useState({
-    teamName: "",
-    createdAt: null, // Date
-    playerId: 5,
-  });
-
-  const canSearch = Boolean(
-    teamFilter.teamName?.trim() || teamFilter.createdAt
-  );
-
-  const handleSearch = async () => {
-    if (!canSearch) return; // evita consulta sem filtros
-
-    setLoading(true);
-    try {
-      // normaliza a data para enviar ao backend (yyyy-mm-dd)
-      const createdAtStr = teamFilter.createdAt
-        ? new Date(teamFilter.createdAt).toISOString().slice(0, 10)
-        : null;
-
-      const payload = {
-        teamName: teamFilter.teamName?.trim() || null,
-        createdAt: createdAtStr,
-      };
-
-      const response = await teamService.search(payload);
-      setTeams(response.data || []);
-    } catch (err) {
-      console.error("Erro ao buscar times:", err);
-      setTeams([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleClear = () => {
-    setTeams([]); // limpa tabela
-    setTeamFilter({ teamName: "", createdAt: null });
-  };
-
-  const playersOptionTemplate = (option) => (
-    <div className="flex align-items-center">
-      <img
-        alt={option.photoURL}
-        src={option.photoURL}
-        className="mr-2"
-        style={{
-          width: 22,
-          height: 22,
-          borderRadius: "50%",
-          objectFit: "cover",
-        }}
-      />
-      <div>{option.nickname}</div>
-    </div>
-  );
-
-  const onHandleChange = (e) => {
-    const { name, value } = e.target;
-    setChampionship((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const create = () => {
-    championshipService.save(championship).then((response) => ({}));
-  };
+  const {
+    teams,
+    types,
+    championship,
+    selectedTeams,
+    teamFilter,
+    canSearch,
+    loading,
+    setSelectedTeams,
+    setTeamFilter,
+    handleSearch,
+    handleClear,
+    onHandleChange,
+    create,
+  } = useChampionship();
 
   return (
     <>
@@ -101,6 +36,7 @@ export default function ChampionshipRegisterForm() {
         <div className="field col-12 md:col-12 lg:col-4 flex flex-column">
           <label>Championship Name</label>
           <InputText
+            autoFocus
             name="championshipName"
             value={championship.championshipName}
             onChange={onHandleChange}
@@ -108,7 +44,11 @@ export default function ChampionshipRegisterForm() {
         </div>
         <div className="field col-12 md:col-12 lg:col-4 flex flex-column">
           <label>Type</label>
-          <EChampionshipData onChange={onHandleChange} />
+          <EChampionshipData
+            types={types}
+            value={championship.type}
+            onChange={(e) => onHandleChange({ name: "type", value: e.value })}
+          />
         </div>
       </div>
 
@@ -154,7 +94,7 @@ export default function ChampionshipRegisterForm() {
             tableStyle={{ minWidth: "24rem" }}
             size="small"
             loading={loading}
-            emptyMessage="No team found. Enter the filters in the columns and click in Search."
+            emptyMessage="No team found. Enter the filters in the columns and click in Search button."
             filterDisplay="row" // habilita inputs na linha de filtros
             showGridlines
             selectionMode={rowClick ? null : "checkbox"}
@@ -231,8 +171,10 @@ export default function ChampionshipRegisterForm() {
                   className="w-full"
                   filter
                   filterDelay={200}
-                  valueTemplate={playersOptionTemplate}
-                  itemTemplate={playersOptionTemplate}
+                  valueTemplate={(option) =>
+                    option && <PlayerOption option={option} />
+                  }
+                  itemTemplate={(option) => <PlayerOption option={option} />}
                   placeholder="Selecione um player"
                 />
               )}
@@ -249,7 +191,7 @@ export default function ChampionshipRegisterForm() {
           label="Submit"
           icon="pi pi-check"
           loading={loading}
-          onClick={() => create}
+          onClick={create}
         />
       </div>
     </>

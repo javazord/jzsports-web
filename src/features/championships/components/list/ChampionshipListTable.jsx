@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useChampionshipData } from "../../data/useChampionshipData";
+import { useChampionship } from "../../data/useChampionship";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { Tooltip } from "primereact/tooltip";
 
 export default function ChampionshipListTable() {
   const [championships, setChampionships] = useState([]);
-  const { getRandomType } = useChampionshipData();
+  const { getRandomType } = useChampionship();
 
   useEffect(() => {
     const randomDateAt = new Date(2025, 0, 1);
