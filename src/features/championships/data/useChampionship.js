@@ -73,10 +73,10 @@ export function useChampionship() {
 
   const create = () => {
     setChampionship({ ...championship, teamList: selectedTeams });
-    // Salvar no backend já com o valor atualizado
-    // championshipService.save(updatedChampionship).then((response) => {
-    //   console.log("Salvo com sucesso", response);
-    // });
+
+    championshipService.save(championship).then((response) => {
+      console.log("Salvo com sucesso", response);
+    });
   };
 
   const getRandomType = () => {
