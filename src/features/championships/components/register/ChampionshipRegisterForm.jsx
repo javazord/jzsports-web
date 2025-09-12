@@ -46,8 +46,10 @@ export default function ChampionshipRegisterForm() {
           <label>Type</label>
           <EChampionshipData
             types={types}
-            value={championship.type}
-            onChange={(e) => onHandleChange({ name: "type", value: e.value })}
+            value={championship.championshipType}
+            onChange={(e) =>
+              onHandleChange({ name: "championshipType", value: e.value })
+            }
           />
         </div>
       </div>

@@ -4,7 +4,7 @@ export default function EChampionshipData({ types, value, onChange }) {
   return (
     <Dropdown
       value={value}
-      name="type"
+      name="championshipType"
       onChange={onChange}
       options={types}
       optionLabel="description"

@@ -15,8 +15,9 @@ export function useChampionship() {
   );
   const [championship, setChampionship] = useState({
     championshipName: "",
-    type: null,
-    teamList: [],
+    championshipType: null,
+    createdBy: { id: 3 },
+    teamsList: [],
   });
   const [selectedTeams, setSelectedTeams] = useState([]);
   const types = [
@@ -72,9 +73,14 @@ export function useChampionship() {
   };
 
   const create = () => {
-    setChampionship({ ...championship, teamList: selectedTeams });
+    const updatedChampionship = {
+      ...championship,
+      teamsList: selectedTeams,
+    };
 
-    championshipService.save(championship).then((response) => {
+    setChampionship(updatedChampionship);
+    console.log(updatedChampionship);
+    championshipService.save(updatedChampionship).then((response) => {
       console.log("Salvo com sucesso", response);
     });
   };
