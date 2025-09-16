@@ -1,126 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useChampionship } from "../../data/useChampionship";
-import { Button } from "primereact/button";
-import { Tag } from "primereact/tag";
-import { Tooltip } from "primereact/tooltip";
+import ChampionshipService from "../../../../api/service/championshipService";
+import { formatDate } from "../../../../utils/dateUtils";
+import useChampionshipList from "../hooks/UseChampionshipList";
 
 export default function ChampionshipListTable() {
-  const [championships, setChampionships] = useState([]);
-  const { getRandomType } = useChampionship();
+  const [championships, setChampionships] = useState([
+    {
+      id: null,
+      championshipName: "",
+      championshipType: "",
+      championshipStatus: "",
+      createdBy: {
+        id: null,
+        nickname: "",
+        username: "",
+        photoURL: "",
+      },
+      startDate: null,
+      endDate: null,
+    },
+  ]);
+  const championshipService = new ChampionshipService();
+  const {
+    statusBodyTemplate,
+    championshipBodyTemplate,
+    addActionsButtons,
+    playerBodyTemplate,
+  } = useChampionshipList();
 
   useEffect(() => {
-    const randomDateAt = new Date(2025, 0, 1);
-    const statuses = ["IN_PROGRESS", "FINISHED", "CANCELLED"]; // possíveis status
-    const tempChampionship = [];
-
-    for (let i = 1; i <= 10; i++) {
-      const randomStatus =
-        statuses[Math.floor(Math.random() * statuses.length)];
-
-      tempChampionship.push({
-        id: i,
-        name: `Championship ${i}`,
-        type: getRandomType(),
-        createdAt: randomDateAt.toLocaleDateString(),
-        status: randomStatus,
-        createdBy: `Profile ${i}`,
-      });
-    }
-
-    setChampionships(tempChampionship);
-  }, []);
-
-  const statusBodyTemplate = (rowData) => {
-    switch (rowData.status) {
-      case "IN_PROGRESS":
-        return <Tag value="In Progress" severity="info" rounded />;
-      case "FINISHED":
-        return <Tag value="Finished" severity="success" rounded />;
-      case "CANCELLED":
-        return (
-          <Tag
-            value="Cancelled"
-            style={{ background: "gray", color: "white", borderRadius: "1rem" }}
-          />
-        );
-      default:
-        return <Tag value="Unknown" severity="warning" rounded />;
-    }
-  };
-
-  const championshipBodyTemplate = (rowData) => {
-    const finishedImg =
-      "https://cdn-icons-png.flaticon.com/512/8348/8348232.png";
-    const defaultImg =
-      "https://cdn-icons-png.flaticon.com/512/1077/1077196.png";
-    return (
-      <div className="flex align-items-center gap-2">
-        {/* Tooltip associado à imagem */}
-        <Tooltip
-          target={`#status-img-${rowData.id}`}
-          content={
-            rowData.status === "FINISHED" ? rowData.createdBy : "No Winner"
-          }
-          position="top"
-        />
-        <img
-          id={`status-img-${rowData.id}`}
-          src={rowData.status === "FINISHED" ? finishedImg : defaultImg}
-          width={32}
-          alt="status icon"
-        />
-
-        <span>{rowData.name}</span>
-      </div>
-    );
-  };
-
-  const addActionsButtons = (rowData) => (
-    <div className="flex gap-2">
-      <Button
-        icon="pi pi-eye"
-        rounded
-        text
-        severity="info"
-        aria-label="View"
-        tooltip="View"
-        tooltipOptions={{ position: "top" }}
-      />
-      <Button
-        icon="pi pi-pencil"
-        rounded
-        text
-        severity="success"
-        aria-label="Edit"
-        tooltip="Edit"
-        tooltipOptions={{ position: "top" }}
-      />
-      <Button
-        icon="pi pi-trash"
-        rounded
-        text
-        severity="danger"
-        aria-label="Delete"
-        tooltip="Delete"
-        tooltipOptions={{ position: "top" }}
-      />
-    </div>
-  );
-
-  const playerBodyTemplate = (rowData) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <img
-          src={`https://cdn-icons-png.flaticon.com/512/3135/3135715.png`}
-          width={32}
-          alt="profile"
-        />
-        <span>{rowData.createdBy}</span>
-      </div>
-    );
-  };
+    championshipService.getByPlayerIncluded(3).then((response) => {
+      setChampionships(response.data);
+    });
+  }, [championships]);
 
   return (
     <div className="grid justify-content-center align-content-center lg:mt-4">
@@ -141,7 +55,7 @@ export default function ChampionshipListTable() {
         >
           <Column field="id" header="#Id" sortable style={{ width: "5%" }} />
           <Column
-            field="name"
+            field="championshipName"
             body={championshipBodyTemplate}
             header="Name"
             filter
@@ -149,21 +63,22 @@ export default function ChampionshipListTable() {
             sortable
           />
           <Column
-            field="type"
+            field="championshipType"
             header="Type"
             filter
             filterPlaceholder="Search"
             sortable
           />
           <Column
-            field="createdAt"
+            field="startDate"
             header="Created At"
+            body={(rowData) => formatDate(rowData.startDate)}
             filter
             filterPlaceholder="Search"
             sortable
           />
           <Column
-            field="status"
+            field="championshipStatus"
             body={statusBodyTemplate}
             header="Status"
             filter

@@ -10,10 +10,14 @@ export default class ChampionshipService extends ApiService {
   }
 
   update(id, championship) {
-    return this.put(`${id}`, championship);
+    return this.put(`/${id}`, championship);
   }
 
-  getChampionshipByPlayer(id, championship) {
-    return this.get(`${id}`, championship);
+  getChampionshipByCreated(id) {
+    return this.get(`/${id}/createdBy`);
+  }
+
+  getByPlayerIncluded(id) {
+    return this.get(`/${id}`);
   }
 }

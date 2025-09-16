@@ -7,6 +7,7 @@ import ConfirmDeleteDialog from "../../../../layouts/components/ConfirmDeleteDia
 import TeamImage from "../../../players/components/images/PlayerImage";
 import { Dropdown } from "primereact/dropdown";
 import TeamService from "../../../../api/service/teamService";
+import { formatDate } from "../../../../utils/dateUtils";
 
 export default function TeamListTable() {
   const [availableTeams, setAvailableTeams] = useState([]);
@@ -111,7 +112,12 @@ export default function TeamListTable() {
               body={(rowData) => <TeamImage rowData={rowData} />}
             />
             <Column field="teamName" header="Name" sortable />
-            <Column field="createdAt" header="Created At" sortable />
+            <Column
+              field="createdAt"
+              header="Created At"
+              body={(rowData) => formatDate(rowData.createdAt)}
+              sortable
+            />
             <Column
               field="nickname"
               header="Players"

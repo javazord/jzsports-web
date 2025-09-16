@@ -1,4 +1,4 @@
-export function UseChampionshipRegister() {
+export function useChampionshipRegister() {
   const imageTeamRender = (rowData) => (
     <img
       src={

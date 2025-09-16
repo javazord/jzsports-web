@@ -16,7 +16,7 @@ export function useChampionship() {
   const [championship, setChampionship] = useState({
     championshipName: "",
     championshipType: null,
-    createdBy: { id: 3 },
+    createdBy: { id: 1 },
     teamsList: [],
   });
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -85,11 +85,6 @@ export function useChampionship() {
     });
   };
 
-  const getRandomType = () => {
-    const index = Math.floor(Math.random() * types.length);
-    return types[index].description;
-  };
-
   return {
     teams,
     championship,
@@ -102,7 +97,6 @@ export function useChampionship() {
     setTeamFilter,
     setLoading,
     setChampionship,
-    getRandomType,
     handleSearch,
     handleClear,
     onHandleChange,
