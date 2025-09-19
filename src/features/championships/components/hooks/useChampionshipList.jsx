@@ -7,15 +7,27 @@ export default function useChampionshipList() {
   const navigate = useNavigate();
 
   const statusBodyTemplate = (rowData) => {
-    switch (rowData.championshipStatus) {
-      case "IN_PROGRESS":
-        return <Tag value="In Progress" severity="info" rounded />;
-      case "FINISHED":
-        return <Tag value="Finished" severity="success" rounded />;
-      case "CANCELLED":
+    switch (rowData.championshipStatusDescription) {
+      case "In Progress":
         return (
           <Tag
-            value="Cancelled"
+            value={rowData.championshipStatusDescription}
+            severity="info"
+            rounded
+          />
+        );
+      case "Finished":
+        return (
+          <Tag
+            value={rowData.championshipStatusDescription}
+            severity="success"
+            rounded
+          />
+        );
+      case "Cancelled":
+        return (
+          <Tag
+            value={rowData.championshipStatusDescription}
             style={{ background: "gray", color: "white", borderRadius: "1rem" }}
           />
         );
@@ -35,7 +47,7 @@ export default function useChampionshipList() {
         <Tooltip
           target={`#status-img-${rowData.id}`}
           content={
-            rowData.championshipStatus === "FINISHED"
+            rowData.championshipStatusDescription === "Finished"
               ? rowData.createdBy.nickname
               : "No Winner"
           }
@@ -44,7 +56,9 @@ export default function useChampionshipList() {
         <img
           id={`status-img-${rowData.id}`}
           src={
-            rowData.championshipStatus === "FINISHED" ? finishedImg : defaultImg
+            rowData.championshipStatusDescription === "Finished"
+              ? finishedImg
+              : defaultImg
           }
           width={32}
           alt="status icon"
@@ -102,10 +116,6 @@ export default function useChampionshipList() {
         <span>{rowData.createdBy.nickname}</span>
       </div>
     );
-  };
-
-  const viewButton = (rowData) => {
-    console.log(rowData);
   };
 
   return {

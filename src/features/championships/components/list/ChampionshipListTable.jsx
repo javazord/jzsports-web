@@ -63,7 +63,7 @@ export default function ChampionshipListTable() {
             sortable
           />
           <Column
-            field="championshipType"
+            field="championshipTypeDescription"
             header="Type"
             filter
             filterPlaceholder="Search"
@@ -78,7 +78,7 @@ export default function ChampionshipListTable() {
             sortable
           />
           <Column
-            field="championshipStatus"
+            field="championshipStatusDescription"
             body={statusBodyTemplate}
             header="Status"
             filter
