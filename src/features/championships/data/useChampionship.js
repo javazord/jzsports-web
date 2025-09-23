@@ -3,41 +3,57 @@ import TeamService from "../../../api/service/teamService";
 import ChampionshipService from "../../../api/service/championshipService";
 
 export function useChampionship() {
-  const [teams, setTeams] = useState([]); // tabela começa vazia
+  const [teams, setTeams] = useState([]); // tabela com resultados da busca
   const [loading, setLoading] = useState(false);
+
+  // filtro de busca de times
   const [teamFilter, setTeamFilter] = useState({
     teamName: "",
     createdAt: null,
-    playerId: 5,
   });
+
   const canSearch = Boolean(
     teamFilter.teamName?.trim() || teamFilter.createdAt
   );
+
+  // Modelo alinhado ao DTO do backend
   const [championship, setChampionship] = useState({
+    id: null,
     championshipName: "",
     championshipType: null,
-    createdBy: { id: 1 },
-    teamsList: [],
+    championshipStatus: null, // backend seta IN_PROGRESS por padrão
+    createdAt: null,
+    startDate: null,
+    endDate: null,
+    createdByPlayerId: 1, // fixo temporário
+    teams: [], // backend espera lista de DTOs de times
+    phases: [], // controlado pelo backend
   });
+
   const [selectedTeams, setSelectedTeams] = useState([]);
+
+  // Tipos disponíveis — ideal seria vir do backend
   const types = [
-    { description: "FPS" },
-    { description: "FIGHT" },
-    { description: "RACING" },
-    { description: "SPORT" },
-    { description: "MOBA" },
+    { code: "FPS", description: "FPS" },
+    { code: "FIGHT", description: "FIGHT" },
+    { code: "RACING", description: "RACING" },
+    { code: "SPORT", description: "SPORT" },
+    { code: "MOBA", description: "MOBA" },
   ];
+
   const teamService = new TeamService();
   const championshipService = new ChampionshipService();
 
-  useEffect(() => {}, [championship]);
+  useEffect(() => {
+    console.log("Championship atualizado:", championship);
+  }, [championship]);
 
+  // busca times
   const handleSearch = async () => {
-    if (!canSearch) return; // evita consulta sem filtros
+    if (!canSearch) return;
 
     setLoading(true);
     try {
-      // normaliza a data para enviar ao backend (yyyy-mm-dd)
       const createdAtStr = teamFilter.createdAt
         ? new Date(teamFilter.createdAt).toISOString().slice(0, 10)
         : null;
@@ -58,13 +74,14 @@ export function useChampionship() {
   };
 
   const handleClear = () => {
-    setTeams([]); // limpa tabela
+    setTeams([]);
     setTeamFilter({ teamName: "", createdAt: null });
   };
 
+  // alteração de campos do championship
   const onHandleChange = (e) => {
-    const name = e.target?.name || e.name; // pega do input ou manual
-    const value = e.target?.value ?? e.value; // pega do input ou dropdown
+    const name = e.target?.name || e.name;
+    const value = e.target?.value ?? e.value;
 
     setChampionship((prev) => ({
       ...prev,
@@ -72,17 +89,21 @@ export function useChampionship() {
     }));
   };
 
-  const create = () => {
+  // salvar championship
+  const create = async () => {
     const updatedChampionship = {
       ...championship,
-      teamsList: selectedTeams,
+      teamIds: selectedTeams.map((team) => team.id), // apenas array de IDs
     };
 
-    setChampionship(updatedChampionship);
-    console.log(updatedChampionship);
-    championshipService.save(updatedChampionship).then((response) => {
+    try {
+      console.log("Payload enviado:", updatedChampionship);
+      const response = await championshipService.save(updatedChampionship);
       console.log("Salvo com sucesso", response);
-    });
+      setChampionship(response.data);
+    } catch (error) {
+      console.error("Erro ao salvar championship:", error);
+    }
   };
 
   return {

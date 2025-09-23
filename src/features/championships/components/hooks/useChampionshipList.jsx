@@ -7,27 +7,16 @@ export default function useChampionshipList() {
   const navigate = useNavigate();
 
   const statusBodyTemplate = (rowData) => {
-    switch (rowData.championshipStatusDescription) {
+    console.log(rowData);
+    switch (rowData.status) {
       case "In Progress":
-        return (
-          <Tag
-            value={rowData.championshipStatusDescription}
-            severity="info"
-            rounded
-          />
-        );
+        return <Tag value={rowData.status} severity="info" rounded />;
       case "Finished":
-        return (
-          <Tag
-            value={rowData.championshipStatusDescription}
-            severity="success"
-            rounded
-          />
-        );
+        return <Tag value={rowData.status} severity="success" rounded />;
       case "Cancelled":
         return (
           <Tag
-            value={rowData.championshipStatusDescription}
+            value={rowData.status}
             style={{ background: "gray", color: "white", borderRadius: "1rem" }}
           />
         );
@@ -47,7 +36,7 @@ export default function useChampionshipList() {
         <Tooltip
           target={`#status-img-${rowData.id}`}
           content={
-            rowData.championshipStatusDescription === "Finished"
+            rowData.status === "Finished"
               ? rowData.createdBy.nickname
               : "No Winner"
           }
@@ -55,18 +44,12 @@ export default function useChampionshipList() {
         />
         <img
           id={`status-img-${rowData.id}`}
-          src={
-            rowData.championshipStatusDescription === "Finished"
-              ? finishedImg
-              : defaultImg
-          }
+          src={rowData.status === "Finished" ? finishedImg : defaultImg}
           width={32}
           alt="status icon"
         />
 
-        <span>
-          {rowData.championshipName ? rowData.championshipName : "No name"}
-        </span>
+        <span>{rowData.name ? rowData.name : "No name"}</span>
       </div>
     );
   };

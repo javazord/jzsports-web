@@ -11,6 +11,7 @@ import { Message } from "primereact/message";
 import { useChampionship } from "../../data/useChampionship";
 import PlayerOption from "../../../players/components/PlayerOption";
 import EChampionshipData from "../../data/EChampionshipData";
+import { classNames } from "primereact/utils";
 
 export default function ChampionshipRegisterForm() {
   const [rowClick, setRowClick] = useState(true);
@@ -30,8 +31,22 @@ export default function ChampionshipRegisterForm() {
     create,
   } = useChampionship();
 
+  const stockBodyTemplate = () => {
+    const stockClassName = classNames(
+      "border-circle w-2rem h-2rem inline-flex font-bold justify-content-center align-items-center text-sm",
+      {
+        "bg-red-100 text-red-900": selectedTeams.length === 0,
+        "bg-blue-100 text-blue-900":
+          selectedTeams.length > 0 && selectedTeams.length < 10,
+      }
+    );
+
+    return <div className={stockClassName}>{selectedTeams.length}</div>;
+  };
+
   return (
     <>
+      {/* Campos principais do campeonato */}
       <div className="grid justify-content-center">
         <div className="field col-12 md:col-12 lg:col-4 flex flex-column">
           <label>Championship Name</label>
@@ -56,17 +71,20 @@ export default function ChampionshipRegisterForm() {
 
       <Divider />
 
-      {/* Ações gerais de filtro */}
+      {/* Ações de filtro de times */}
       <div className="grid justify-content-center">
         <div className="col-12 md:col-12 lg:col-8 flex flex-column gap-2">
           <div className="flex flex-row justify-content-between align-items-center gap-2 w-full mb-2">
-            <div>
-              <Message
-                className="p-0"
-                severity="secondary"
-                text={`Total teams selected: ${selectedTeams.length}`}
-              />
-            </div>
+            <Message
+              className="p-0"
+              severity="secondary"
+              text={
+                <div className="flex align-items-center gap-2">
+                  <span>Total teams selected:</span>
+                  {stockBodyTemplate()} {/* <- Executa e renderiza o JSX */}
+                </div>
+              }
+            />
             <div className="flex gap-2">
               <Button
                 icon="pi pi-search"
@@ -96,8 +114,8 @@ export default function ChampionshipRegisterForm() {
             tableStyle={{ minWidth: "24rem" }}
             size="small"
             loading={loading}
-            emptyMessage="No team found. Enter the filters in the columns and click in Search button."
-            filterDisplay="row" // habilita inputs na linha de filtros
+            emptyMessage="No team found. Enter the filters and click Search."
+            filterDisplay="row"
             showGridlines
             selectionMode={rowClick ? null : "checkbox"}
             selection={selectedTeams}
@@ -112,7 +130,6 @@ export default function ChampionshipRegisterForm() {
               headerStyle={{ width: "6rem" }}
             />
 
-            {/* Nome do time - filtro na própria coluna */}
             <Column
               field="teamName"
               header="Name"
@@ -134,7 +151,6 @@ export default function ChampionshipRegisterForm() {
               }
             />
 
-            {/* Data de criação - filtro na própria coluna */}
             <Column
               field="createdAt"
               header="Created At"
@@ -163,12 +179,12 @@ export default function ChampionshipRegisterForm() {
             />
 
             <Column
-              field="nickname"
+              field="players"
               header="Players"
               body={(rowData) => (
                 <Dropdown
-                  value={rowData.playersList?.[0]}
-                  options={rowData.playersList}
+                  value={rowData.players?.[0]}
+                  options={rowData.players || []}
                   optionLabel="nickname"
                   className="w-full"
                   filter
@@ -177,7 +193,7 @@ export default function ChampionshipRegisterForm() {
                     option && <PlayerOption option={option} />
                   }
                   itemTemplate={(option) => <PlayerOption option={option} />}
-                  placeholder="Selecione um player"
+                  placeholder="Select a player"
                 />
               )}
               style={{ width: "25%" }}

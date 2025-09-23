@@ -124,8 +124,8 @@ export default function TeamListTable() {
               style={{ width: "10%" }}
               body={(rowData) => (
                 <Dropdown
-                  value={rowData.playersList[0]}
-                  options={rowData.playersList}
+                  value={rowData.players[0]}
+                  options={rowData.players}
                   optionLabel="nickname"
                   className="w-full"
                   filter

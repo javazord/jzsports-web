@@ -8,9 +8,10 @@ export default function ChampionshipView() {
   const { state } = useLocation();
   const [phase, setPhase] = useState({
     id: null,
-    phase: "",
-    championship: null,
-    matchesList: [],
+    phaseType: "",
+    championshipId: null,
+    champinoshipName: "",
+    matches: [],
   });
   const phaseService = new PhaseService();
   const championship = state;
@@ -18,6 +19,7 @@ export default function ChampionshipView() {
   useEffect(() => {
     phaseService.getByChampionshipId(championship.id).then((response) => {
       setPhase(response.data);
+      console.log(response.data);
     });
   }, [championship]);
 
@@ -25,7 +27,7 @@ export default function ChampionshipView() {
     <>
       <div className="grid justify-content-center align-content-center mt-2 gap-2">
         <span className="align-content-center pi pi-arrow-left"></span>
-        <h2 className="">{phase.phaseTypeDescription}</h2>
+        <h2 className="">{phase.phaseType}</h2>
         <span className="align-content-center pi pi-arrow-right"></span>
       </div>
       <Divider />

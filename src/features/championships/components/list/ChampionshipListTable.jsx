@@ -2,27 +2,14 @@ import React, { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import ChampionshipService from "../../../../api/service/championshipService";
+import PlayerService from "../../../../api/service/playerService";
 import { formatDate } from "../../../../utils/dateUtils";
 import useChampionshipList from "../hooks/UseChampionshipList";
 
 export default function ChampionshipListTable() {
-  const [championships, setChampionships] = useState([
-    {
-      id: null,
-      championshipName: "",
-      championshipType: "",
-      championshipStatus: "",
-      createdBy: {
-        id: null,
-        nickname: "",
-        username: "",
-        photoURL: "",
-      },
-      startDate: null,
-      endDate: null,
-    },
-  ]);
+  const [championships, setChampionships] = useState([]);
   const championshipService = new ChampionshipService();
+  const playerService = new PlayerService(); // Para buscar info do player
   const {
     statusBodyTemplate,
     championshipBodyTemplate,
@@ -31,10 +18,43 @@ export default function ChampionshipListTable() {
   } = useChampionshipList();
 
   useEffect(() => {
-    championshipService.getByPlayerIncluded(3).then((response) => {
-      setChampionships(response.data);
-    });
-  }, [championships]);
+    const fetchChampionships = async () => {
+      try {
+        const response = await championshipService.getByPlayerIncluded(3);
+        const transformedData = await Promise.all(
+          response.data.map(async (item) => {
+            // Buscar info do criador
+            let createdByPlayer = null;
+            if (item.createdByPlayerId) {
+              const playerRes = await playerService.getPlayer(
+                item.createdByPlayerId
+              );
+              createdByPlayer = playerRes.data;
+            }
+
+            return {
+              id: item.id,
+              name: item.championshipName,
+              type: item.championshipType,
+              status: item.championshipStatus,
+              createdAt: item.createdAt,
+              startDate: item.startDate,
+              endDate: item.endDate,
+              createdBy: createdByPlayer, // { id, nickname, username, photoURL }
+              teams: item.teams || [],
+              phases: item.phases || [],
+            };
+          })
+        );
+        console.log(response.data);
+        setChampionships(transformedData);
+      } catch (error) {
+        console.error("Erro ao buscar campeonatos:", error);
+      }
+    };
+
+    fetchChampionships();
+  }, []);
 
   return (
     <div className="grid justify-content-center align-content-center lg:mt-4">
@@ -55,7 +75,7 @@ export default function ChampionshipListTable() {
         >
           <Column field="id" header="#Id" sortable style={{ width: "5%" }} />
           <Column
-            field="championshipName"
+            field="name"
             body={championshipBodyTemplate}
             header="Name"
             filter
@@ -63,7 +83,7 @@ export default function ChampionshipListTable() {
             sortable
           />
           <Column
-            field="championshipTypeDescription"
+            field="type"
             header="Type"
             filter
             filterPlaceholder="Search"
@@ -71,14 +91,18 @@ export default function ChampionshipListTable() {
           />
           <Column
             field="startDate"
-            header="Created At"
-            body={(rowData) => formatDate(rowData.startDate)}
+            header="Start Date"
+            body={(rowData) =>
+              formatDate(rowData.startDate) != "" || null
+                ? rowData.startDate
+                : "Not Started"
+            }
             filter
             filterPlaceholder="Search"
             sortable
           />
           <Column
-            field="championshipStatusDescription"
+            field="status"
             body={statusBodyTemplate}
             header="Status"
             filter
