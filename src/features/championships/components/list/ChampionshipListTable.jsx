@@ -46,7 +46,6 @@ export default function ChampionshipListTable() {
             };
           })
         );
-        console.log(response.data);
         setChampionships(transformedData);
       } catch (error) {
         console.error("Erro ao buscar campeonatos:", error);

@@ -32,6 +32,7 @@ export default function ChampionshipView() {
       </div>
       <Divider />
       <ChampionshipChart phase={phase} />
+      {/**<ChampionshipChart phase={phase} />*/}
     </>
   );
 }
